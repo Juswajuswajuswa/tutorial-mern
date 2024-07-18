@@ -1,19 +1,22 @@
 import { Link } from "react-router-dom";
 import apiRequest from "../lib/apiRequest";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-// import apiRequest from "../lib/apiRequest";
-// import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { signInStart, signInSuccess, signInfailure } from "../../redux/user/userSlice";
+import OAuth from "../components/OAuth";
+
 
 export default function SignIn() {
   const navigate = useNavigate()
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
+  const {loading, error} = useSelector((state) => state.user)
+  // const [error, setError] = useState("")
+  // const [loading, setLoading] = useState(false)
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    dispatch(signInStart())
     try {
       const formData = new FormData(e.target);
       const inputs = Object.fromEntries(formData);
@@ -26,20 +29,16 @@ export default function SignIn() {
       
       const data = await res.data
 
-      setError(null)
-      console.log(data)
+      dispatch(signInSuccess(data))
       navigate('/')
     } catch (error) {
-      setError(error.response.data.message)
-      console.log(error);
-    } finally {
-      setLoading(false)
-    }
+      dispatch(signInfailure(error.response.data.message))
+    } 
   };
 
   return (
     <div className="p-3 max-w-lg mx-auto">
-      <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
+      <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="email"
@@ -56,6 +55,7 @@ export default function SignIn() {
         <button disabled={loading} className="bg-slate-700 text-white p-3 rounder-lg uppercase hover:opacity-95 disabled:opacity-80">
           {loading ? "loading..." : "Sign In"}
         </button>
+        <OAuth/>
         {error && <span className="text-red-600">{error}</span>}
       </form>
 

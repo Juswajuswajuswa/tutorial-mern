@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import apiRequest from "../lib/apiRequest";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import OAuth from "../components/OAuth";
 // import apiRequest from "../lib/apiRequest";
 // import axios from "axios";
 
@@ -29,7 +30,7 @@ export default function SignUp() {
 
       setError(null)
       console.log(data)
-      // navigate('/sign-in')
+      navigate('/sign-in')
     } catch (error) {
       setError(error.response.data.message)
       console.log(error);
@@ -63,6 +64,7 @@ export default function SignUp() {
         <button disabled={loading} className="bg-slate-700 text-white p-3 rounder-lg uppercase hover:opacity-95 disabled:opacity-80">
           {loading ? "loading..." : "Sign Up"}
         </button>
+        <OAuth/>
         {error && <span className="text-red-600">{error}</span>}
       </form>
 
